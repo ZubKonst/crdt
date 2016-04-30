@@ -1,5 +1,4 @@
 require_relative 'test_helper'
-require 'lww_set'
 
 class TestLWWSet < Minitest::Test
   def setup

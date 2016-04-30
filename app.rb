@@ -1,1 +1,1 @@
-$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), 'app'))
+Dir[File.join(File.dirname(__FILE__), 'app', '*.rb')].each {|file| require file }
