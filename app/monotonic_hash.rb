@@ -2,6 +2,7 @@
 # where value for the specific key is nondecreasing.
 #
 class MonotonicHash
+  include Enumerable
 
   # MonotonicHash.new    -> new_monotonic_hash
   #
@@ -36,6 +37,23 @@ class MonotonicHash
   #
   def [](key)
     @hash[key]
+  end
+
+  # monotonic_hash.each {|key| block }
+  #
+  # Calls the given block once for each element in the set, passing
+  # the element as parameter.  Returns an enumerator if no block is
+  # given.
+  def each
+    @hash.each {|key| yield key}
+  end
+
+  # monotonic_hash.to_h -> hash
+  #
+  # Converts MonotonicHash to a Hash object.
+  #
+  def to_h
+    @hash.dup
   end
 
 end
