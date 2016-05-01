@@ -13,6 +13,12 @@ class TestLWWSetPerformance < Minitest::Benchmark
       end
   end
 
+  def teardown
+    self.class.bench_range.each do |n|
+      Redis.current.del("test#{n}:add_set", "test#{n}:remove_set")
+    end
+  end
+
   def bench_element_assignment
     assert_performance_constant 0.999 do |n|
       @lww_sets[n].add('key_0', rand(10000))
