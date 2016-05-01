@@ -1,11 +1,20 @@
 class LWWSet
 
-  # LWWSet.new    -> new_lww_set
+  # LWWSet.new(store: store)    -> new_lww_set
   #
   # Returns a new, empty LWW set.
-  def initialize
-    @add_set    = MonotonicHash.new('add_set')
-    @remove_set = MonotonicHash.new('remove_set')
+  # Given store(:memory or :redis) will be used for persisting data.
+  #
+  def initialize(store: :memory)
+    set_class =
+      case store
+        when :memory then MonotonicHash
+        when :redis  then RedisMonotonicHash
+        else raise "Unknown store '#{store}'"
+      end
+
+    @add_set    = set_class.new('add_set')
+    @remove_set = set_class.new('remove_set')
   end
 
   # lww_ser.add(element, new_time)  -> lww_set
@@ -13,7 +22,7 @@ class LWWSet
   # Adds element and timestamp into MonotonicHash @add_set.
   #
   def add(element, new_time)
-    @add_set[element] = new_time
+    @add_set[element] = new_time.to_i
     self
   end
 
@@ -22,7 +31,7 @@ class LWWSet
   # Adds element and timestamp into MonotonicHash @remove_set.
   #
   def remove(element, new_time)
-    @remove_set[element] = new_time
+    @remove_set[element] = new_time.to_i
     self
   end
 

@@ -3,7 +3,7 @@ require_relative 'test_helper'
 class TestLWWSet < Minitest::Test
 
   def setup
-    @lww_set = LWWSet.new
+    @lww_set = LWWSet.new(store: :memory)
     mock_sets!
   end
 
