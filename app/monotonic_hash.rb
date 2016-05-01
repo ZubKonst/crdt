@@ -9,6 +9,7 @@ class MonotonicHash
   # Returns a new, empty monotonic hash.
   def initialize
     @hash = {}
+    @write_lock = Mutex.new
   end
 
   # monotonic_hash[key] = score    -> score or nil
@@ -22,9 +23,11 @@ class MonotonicHash
   # Returns nil if no changes were made.
   #
   def []=(key, score)
-    current_score = @hash[key]
-    if !current_score || current_score < score
-      @hash[key] = score
+    @write_lock.synchronize do
+      current_score = @hash[key]
+      if !current_score || current_score < score
+        @hash[key] = score
+      end
     end
   end
 
