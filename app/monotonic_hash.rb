@@ -39,14 +39,15 @@ class MonotonicHash
     @hash[key]
   end
 
-  # monotonic_hash.each {|key| block }
+  # monotonic_hash.each {|key, value| block }
   #
   # Calls the given block once for each element in the set, passing
   # the element as parameter.  Returns an enumerator if no block is
   # given.
+  # See also Enumerable.
   #
   def each
-    @hash.each {|key| yield key}
+    @hash.each {|key, value| yield key, value }
   end
 
   # monotonic_hash.to_h -> hash
