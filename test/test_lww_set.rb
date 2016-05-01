@@ -67,12 +67,12 @@ class TestLWWSet < Minitest::Test
           # added and removed
           time = rand(1000)
           add_set["key_#{i}"] = time
-          remove_set["key_#{i}"] = time + rand(1000)
+          remove_set["key_#{i}"] = time + 1 + rand(1000)
         when 0.75...1
           # removed and added
           result_keys << "key_#{i}"
           time = rand(1000)
-          add_set["key_#{i}"] = time + rand(1000)
+          add_set["key_#{i}"] = time + 1 + rand(1000)
           remove_set["key_#{i}"] = time
       end
     end
