@@ -1,6 +1,7 @@
 require_relative 'test_helper'
 
 class TestMonotonicHash < Minitest::Test
+
   def setup
     @lww_set = MonotonicHash.new
   end

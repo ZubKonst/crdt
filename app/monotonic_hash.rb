@@ -44,6 +44,7 @@ class MonotonicHash
   # Calls the given block once for each element in the set, passing
   # the element as parameter.  Returns an enumerator if no block is
   # given.
+  #
   def each
     @hash.each {|key| yield key}
   end
