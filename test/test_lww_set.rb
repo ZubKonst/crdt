@@ -4,19 +4,16 @@ class TestLWWSet < Minitest::Test
 
   def setup
     @lww_set = LWWSet.new
-    @add_set    = @lww_set.instance_variable_get(:@add_set)
-    @remove_set = @lww_set.instance_variable_get(:@remove_set)
+    mock_sets!
   end
 
   def test_that_add_uses_add_set
-    mock_sets!
     @add_set.expect :[]=, true, [:test_key, 42]
     @lww_set.add(:test_key, 42)
     @add_set.verify
   end
 
   def test_that_remove_uses_remove_set
-    mock_sets!
     @remove_set.expect :[]=, true, [:test_key, 42]
     @lww_set.remove(:test_key, 42)
     @remove_set.verify
