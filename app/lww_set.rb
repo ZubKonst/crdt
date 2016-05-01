@@ -1,11 +1,12 @@
 class LWWSet
 
-  # LWWSet.new(store: store)    -> new_lww_set
+  # LWWSet.new(store: store, namespace: 'LWWSet')    -> new_lww_set
   #
   # Returns a new, empty LWW set.
   # Given store(:memory or :redis) will be used for persisting data.
+  # Use namespaces to separate different LWWSet instances (it's important when you use :redis store).
   #
-  def initialize(store: :memory)
+  def initialize(store: :memory, namespace: 'LWWSet')
     set_class =
       case store
         when :memory then MonotonicHash
@@ -13,8 +14,8 @@ class LWWSet
         else raise "Unknown store '#{store}'"
       end
 
-    @add_set    = set_class.new('add_set')
-    @remove_set = set_class.new('remove_set')
+    @add_set    = set_class.new("#{namespace}:add_set")
+    @remove_set = set_class.new("#{namespace}:remove_set")
   end
 
   # lww_ser.add(element, new_time)  -> lww_set
