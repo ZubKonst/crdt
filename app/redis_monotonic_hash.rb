@@ -1,20 +1,19 @@
-# A MonotonicHash is a collection of unique keys and their values,
+# A RedisMonotonicHash is a collection of unique keys and their values,
 # where each value is nondecreasing.
-# Memory is used to persist data.
+# Redis is used to persist data.
 #
-class MonotonicHash
+class RedisMonotonicHash
   include Enumerable
 
-  # MonotonicHash.new(name)  -> new_monotonic_hash
+  # RedisMonotonicHash.new(name)  -> new_redis_monotonic_hash
   #
   # Returns a new, empty monotonic hash.
   def initialize(name)
-    @name = name
-    @hash = {}
+    @redis_key = name
     @write_lock = Mutex.new
   end
 
-  # monotonic_hash[key] = score    -> score or nil
+  # redis_monotonic_hash[key] = score    -> score or nil
   #
   # == Element Assignment
   #
@@ -26,14 +25,15 @@ class MonotonicHash
   #
   def []=(key, score)
     @write_lock.synchronize do
-      current_score = @hash[key]
+      current_score = redis.zscore(@redis_key, key)
       if !current_score || current_score < score
-        @hash[key] = score
+        redis.zadd(@redis_key, score, key)
+        score
       end
     end
   end
 
-  # monotonic_hash[key]    -> score or nil
+  # redis_monotonic_hash[key]    -> score or nil
   #
   # == Element Reference
   #
@@ -41,10 +41,10 @@ class MonotonicHash
   # If not found, returns nil.
   #
   def [](key)
-    @hash[key]
+    redis.zscore(@redis_key, key)
   end
 
-  # monotonic_hash.each {|key, value| block }
+  # redis_monotonic_hash.each {|key, value| block }
   #
   # Calls the given block once for each element in the set, passing
   # the element as parameter.  Returns an enumerator if no block is
@@ -52,14 +52,24 @@ class MonotonicHash
   # See also Enumerable.
   #
   def each
-    @hash.each {|key, value| yield key, value }
+    all_entries.each {|key, value| yield key, value }
   end
 
-  # monotonic_hash.to_h -> hash
+  # redis_monotonic_hash.to_h -> hash
   #
-  # Converts MonotonicHash to a Hash object.
+  # Converts RedisMonotonicHash to a Hash object.
   #
   def to_h
-    @hash.dup
+    Hash[all_entries]
   end
+
+  private
+
+    def all_entries
+      redis.zrange(@redis_key, 0, -1, with_scores: true)
+    end
+
+    def redis
+      Redis.current
+    end
 end

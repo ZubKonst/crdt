@@ -4,8 +4,8 @@ class LWWSet
   #
   # Returns a new, empty LWW set.
   def initialize
-    @add_set    = MonotonicHash.new
-    @remove_set = MonotonicHash.new
+    @add_set    = MonotonicHash.new('add_set')
+    @remove_set = MonotonicHash.new('remove_set')
   end
 
   # lww_ser.add(element, new_time)  -> lww_set

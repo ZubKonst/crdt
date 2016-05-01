@@ -1,5 +1,7 @@
-require 'simplecov'
-SimpleCov.start
+unless ENV['DISABLE_COVERAGE']
+  require 'simplecov'
+  SimpleCov.start
+end
 
 require_relative '../app'
 require 'minitest/autorun'
