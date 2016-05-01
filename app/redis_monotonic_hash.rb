@@ -24,6 +24,7 @@ class RedisMonotonicHash
   # Returns nil if no changes were made.
   #
   def []=(key, score)
+    # TODO use WATCH here (http://redis.io/commands/watch)
     @write_lock.synchronize do
       current_score = redis.zscore(@redis_key, key)
       if !current_score || current_score < score
