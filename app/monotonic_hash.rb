@@ -14,15 +14,12 @@ class MonotonicHash
     @write_lock = Mutex.new
   end
 
-  # monotonic_hash[key] = score    -> score or nil
+  # monotonic_hash[key] = score    -> score
   #
   # == Element Assignment
   #
   # If there is already an entry for key, set its value to score if score is bigger than the currently-stored score.
   # Otherwise, insert a new entry consisting of the key and the given score.
-  #
-  # Returns score if the new score was assigned to an entry.
-  # Returns nil if no changes were made.
   #
   def []=(key, score)
     @write_lock.synchronize do
@@ -31,6 +28,7 @@ class MonotonicHash
         @hash[key] = score
       end
     end
+    score
   end
 
   # monotonic_hash[key]    -> score or nil
