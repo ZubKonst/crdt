@@ -50,6 +50,7 @@ class RedisMonotonicHash
   # See also Enumerable.
   #
   def each
+    # TODO use ZSCAN to process entries in batches
     all_entries.each {|key, value| yield key, value }
   end
 

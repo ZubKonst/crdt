@@ -56,6 +56,7 @@ class LWWSet
   # or where the timestamp for the element in @add_set is newer than the timestamp for the element in @remove_set.
   #
   def get
+    # TODO think about processing entries in batches
     remove_times = @remove_set.to_h
     @add_set.to_a.select do |element, add_time|
       remove_time = remove_times[element]
